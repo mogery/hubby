@@ -10,7 +10,7 @@ impl Display for VarIntError {
     fn fmt(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
         match self {
             VarIntError::Overflow => formatter.write_str("VarInt/VarLong is too big"),
-            VarIntError::Io(e) => formatter.write_str("IO Error"),
+            VarIntError::Io(_e) => formatter.write_str("IO Error"),
         }
     }
 }
@@ -29,7 +29,7 @@ pub fn read_varint(vec: &[u8]) -> Result<(i32, usize)> {
         current_byte = vec[i];
         i += 1;
 
-        value = value | (current_byte as i32 & 0x7F) << pos;
+        value |= (current_byte as i32 & 0x7F) << pos;
 
         if (current_byte & 0x80) == 0 {
             break;
@@ -74,7 +74,7 @@ pub fn read_varlong(vec: &[u8]) -> Result<(i64, usize)> {
         current_byte = vec[i];
         i += 1;
 
-        value = value | (current_byte as i64 & 0x7F) << pos;
+        value |= (current_byte as i64 & 0x7F) << pos;
 
         if (current_byte & 0x80) == 0 {
             break;
@@ -115,17 +115,17 @@ pub fn write_varlong_in_place(vec: &mut Vec<u8>, mut x: i64) {
 mod tests {
     #[test]
     fn read_varint_works() {
-        assert_eq!(crate::read_varint(&vec! [0x00]).unwrap(), (0, 1));
-        assert_eq!(crate::read_varint(&vec! [0x01]).unwrap(), (1, 1));
-        assert_eq!(crate::read_varint(&vec! [0x02]).unwrap(), (2, 1));
-        assert_eq!(crate::read_varint(&vec! [0x7f]).unwrap(), (127, 1));
-        assert_eq!(crate::read_varint(&vec! [0x80, 0x01]).unwrap(), (128, 2));
-        assert_eq!(crate::read_varint(&vec! [0xff, 0x01]).unwrap(), (255, 2));
-        assert_eq!(crate::read_varint(&vec! [0xdd, 0xc7, 0x01]).unwrap(), (25565, 3));
-        assert_eq!(crate::read_varint(&vec! [0xff, 0xff, 0x7f]).unwrap(), (2097151, 3));
-        assert_eq!(crate::read_varint(&vec! [0xff, 0xff, 0xff, 0xff, 0x07]).unwrap(), (2147483647, 5));
-        assert_eq!(crate::read_varint(&vec! [0xff, 0xff, 0xff, 0xff, 0x0f]).unwrap(), (-1, 5));
-        assert_eq!(crate::read_varint(&vec! [0x80, 0x80, 0x80, 0x80, 0x08]).unwrap(), (-2147483648, 5));
+        assert_eq!(crate::read_varint(&[0x00]).unwrap(), (0, 1));
+        assert_eq!(crate::read_varint(&[0x01]).unwrap(), (1, 1));
+        assert_eq!(crate::read_varint(&[0x02]).unwrap(), (2, 1));
+        assert_eq!(crate::read_varint(&[0x7f]).unwrap(), (127, 1));
+        assert_eq!(crate::read_varint(&[0x80, 0x01]).unwrap(), (128, 2));
+        assert_eq!(crate::read_varint(&[0xff, 0x01]).unwrap(), (255, 2));
+        assert_eq!(crate::read_varint(&[0xdd, 0xc7, 0x01]).unwrap(), (25565, 3));
+        assert_eq!(crate::read_varint(&[0xff, 0xff, 0x7f]).unwrap(), (2097151, 3));
+        assert_eq!(crate::read_varint(&[0xff, 0xff, 0xff, 0xff, 0x07]).unwrap(), (2147483647, 5));
+        assert_eq!(crate::read_varint(&[0xff, 0xff, 0xff, 0xff, 0x0f]).unwrap(), (-1, 5));
+        assert_eq!(crate::read_varint(&[0x80, 0x80, 0x80, 0x80, 0x08]).unwrap(), (-2147483648, 5));
     }
 
     #[test]
@@ -177,17 +177,17 @@ mod tests {
 
     #[test]
     fn read_varlong_works() {
-        assert_eq!(crate::read_varlong(&vec! [0x00]).unwrap(), (0, 1));
-        assert_eq!(crate::read_varlong(&vec! [0x01]).unwrap(), (1, 1));
-        assert_eq!(crate::read_varlong(&vec! [0x02]).unwrap(), (2, 1));
-        assert_eq!(crate::read_varlong(&vec! [0x7f]).unwrap(), (127, 1));
-        assert_eq!(crate::read_varlong(&vec! [0x80, 0x01]).unwrap(), (128, 2));
-        assert_eq!(crate::read_varlong(&vec! [0xff, 0x01]).unwrap(), (255, 2));
-        assert_eq!(crate::read_varlong(&vec! [0xff, 0xff, 0xff, 0xff, 0x07]).unwrap(), (2147483647, 5));
-        assert_eq!(crate::read_varlong(&vec! [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f]).unwrap(), (9223372036854775807, 9));
-        assert_eq!(crate::read_varlong(&vec! [0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x01]).unwrap(), (-1, 10));
-        assert_eq!(crate::read_varlong(&vec! [0x80, 0x80, 0x80, 0x80, 0xf8, 0xff, 0xff, 0xff, 0xff, 0x01]).unwrap(), (-2147483648, 10));
-        assert_eq!(crate::read_varlong(&vec! [0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x01]).unwrap(), (-9223372036854775808, 10));
+        assert_eq!(crate::read_varlong(&[0x00]).unwrap(), (0, 1));
+        assert_eq!(crate::read_varlong(&[0x01]).unwrap(), (1, 1));
+        assert_eq!(crate::read_varlong(&[0x02]).unwrap(), (2, 1));
+        assert_eq!(crate::read_varlong(&[0x7f]).unwrap(), (127, 1));
+        assert_eq!(crate::read_varlong(&[0x80, 0x01]).unwrap(), (128, 2));
+        assert_eq!(crate::read_varlong(&[0xff, 0x01]).unwrap(), (255, 2));
+        assert_eq!(crate::read_varlong(&[0xff, 0xff, 0xff, 0xff, 0x07]).unwrap(), (2147483647, 5));
+        assert_eq!(crate::read_varlong(&[0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f]).unwrap(), (9223372036854775807, 9));
+        assert_eq!(crate::read_varlong(&[0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x01]).unwrap(), (-1, 10));
+        assert_eq!(crate::read_varlong(&[0x80, 0x80, 0x80, 0x80, 0xf8, 0xff, 0xff, 0xff, 0xff, 0x01]).unwrap(), (-2147483648, 10));
+        assert_eq!(crate::read_varlong(&[0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x01]).unwrap(), (-9223372036854775808, 10));
     }
 
     #[test]

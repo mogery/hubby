@@ -3,7 +3,7 @@ mod varint;
 use std::io::ErrorKind;
 
 use tokio::net::TcpListener;
-use tokio::io::{AsyncReadExt, AsyncWriteExt};
+use tokio::io::{AsyncReadExt};
 use varint::{read_varint, read_varint_tcp};
 
 #[tokio::main]

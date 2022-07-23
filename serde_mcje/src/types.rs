@@ -6,9 +6,9 @@ use mc_varint::*;
 #[derive(PartialEq, Debug)]
 pub struct VarInt(pub i32);
 
-impl Into<i32> for VarInt {
-    fn into(self) -> i32 {
-        self.0
+impl From<VarInt> for i32 {
+    fn from(x: VarInt) -> i32 {
+        x.0
     }
 }
 
@@ -52,7 +52,7 @@ impl<'de> Visitor<'de> for VarIntVisitor {
         loop {
             current_byte = seq.next_element()?.unwrap();
 
-            value = value | (current_byte as i32 & 0x7F) << pos;
+            value |= (current_byte as i32 & 0x7F) << pos;
 
             if (current_byte & 0x80) == 0 {
                 break;
@@ -81,9 +81,9 @@ impl<'de> Deserialize<'de> for VarInt {
 #[derive(PartialEq, Debug)]
 pub struct VarLong(pub i64);
 
-impl Into<i64> for VarLong {
-    fn into(self) -> i64 {
-        self.0
+impl From<VarLong> for i64 {
+    fn from(x: VarLong) -> i64 {
+        x.0
     }
 }
 
@@ -127,7 +127,7 @@ impl<'de> Visitor<'de> for VarLongVisitor {
         loop {
             current_byte = seq.next_element()?.unwrap();
 
-            value = value | (current_byte as i64 & 0x7F) << pos;
+            value |= (current_byte as i64 & 0x7F) << pos;
 
             if (current_byte & 0x80) == 0 {
                 break;

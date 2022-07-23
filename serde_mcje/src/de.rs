@@ -81,7 +81,7 @@ impl<'de> Deserializer<'de> {
     // Makes no attempt to handle escape sequences. What did you expect? This is
     // example code!
     fn parse_string(&mut self) -> Result<&'de str> {
-        let (len, len_len) = match read_varint(&self.input) {
+        let (len, len_len) = match read_varint(self.input) {
             Ok(x) => Ok(x),
             Err(e) => {
                 Err(match e {
@@ -143,56 +143,56 @@ impl<'de, 'a> de::Deserializer<'de> for &'a mut Deserializer<'de> {
     where
         V: Visitor<'de>,
     {
-        visitor.visit_i8(self.input.read_i8().or_else(|x| Result::Err(Error::Io(x)))?)
+        visitor.visit_i8(self.input.read_i8().map_err(Error::Io)?)
     }
 
     fn deserialize_i16<V>(self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
-        visitor.visit_i16(self.input.read_i16::<BigEndian>().or_else(|x| Result::Err(Error::Io(x)))?)
+        visitor.visit_i16(self.input.read_i16::<BigEndian>().map_err(Error::Io)?)
     }
 
     fn deserialize_i32<V>(self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
-        visitor.visit_i32(self.input.read_i32::<BigEndian>().or_else(|x| Result::Err(Error::Io(x)))?)
+        visitor.visit_i32(self.input.read_i32::<BigEndian>().map_err(Error::Io)?)
     }
 
     fn deserialize_i64<V>(self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
-        visitor.visit_i64(self.input.read_i64::<BigEndian>().or_else(|x| Result::Err(Error::Io(x)))?)
+        visitor.visit_i64(self.input.read_i64::<BigEndian>().map_err(Error::Io)?)
     }
 
     fn deserialize_u8<V>(self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
-        visitor.visit_u8(self.input.read_u8().or_else(|x| Result::Err(Error::Io(x)))?)
+        visitor.visit_u8(self.input.read_u8().map_err(Error::Io)?)
     }
 
     fn deserialize_u16<V>(self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
-        visitor.visit_u16(self.input.read_u16::<BigEndian>().or_else(|x| Result::Err(Error::Io(x)))?)
+        visitor.visit_u16(self.input.read_u16::<BigEndian>().map_err(Error::Io)?)
     }
 
     fn deserialize_u32<V>(self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
-        visitor.visit_u32(self.input.read_u32::<BigEndian>().or_else(|x| Result::Err(Error::Io(x)))?)
+        visitor.visit_u32(self.input.read_u32::<BigEndian>().map_err(Error::Io)?)
     }
 
     fn deserialize_u64<V>(self, visitor: V) -> Result<V::Value>
     where
         V: Visitor<'de>,
     {
-        visitor.visit_u64(self.input.read_u64::<BigEndian>().or_else(|x| Result::Err(Error::Io(x)))?)
+        visitor.visit_u64(self.input.read_u64::<BigEndian>().map_err(Error::Io)?)
     }
 
     // Float parsing is stupidly hard.
@@ -200,7 +200,7 @@ impl<'de, 'a> de::Deserializer<'de> for &'a mut Deserializer<'de> {
     where
         V: Visitor<'de>,
     {
-        visitor.visit_f32(self.input.read_f32::<BigEndian>().or_else(|x| Result::Err(Error::Io(x)))?)
+        visitor.visit_f32(self.input.read_f32::<BigEndian>().map_err(Error::Io)?)
     }
 
     // Float parsing is stupidly hard.
@@ -208,7 +208,7 @@ impl<'de, 'a> de::Deserializer<'de> for &'a mut Deserializer<'de> {
     where
         V: Visitor<'de>,
     {
-        visitor.visit_f64(self.input.read_f64::<BigEndian>().or_else(|x| Result::Err(Error::Io(x)))?)
+        visitor.visit_f64(self.input.read_f64::<BigEndian>().map_err(Error::Io)?)
     }
 
     // The `Serializer` implementation on the previous page serialized chars as

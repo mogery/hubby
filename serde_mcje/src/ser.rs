@@ -57,45 +57,45 @@ impl<'a> ser::Serializer for &'a mut Serializer {
     // will be serialized the same. Other formats, especially compact binary
     // formats, may need independent logic for the different sizes.
     fn serialize_i8(self, v: i8) -> Result<()> {
-        self.output.write_i8(v).or_else(|x| Result::Err(Error::Io(x)))
+        self.output.write_i8(v).map_err(Error::Io)
     }
 
     fn serialize_i16(self, v: i16) -> Result<()> {
-        self.output.write_i16::<BigEndian>(v).or_else(|x| Result::Err(Error::Io(x)))
+        self.output.write_i16::<BigEndian>(v).map_err(Error::Io)
     }
 
     fn serialize_i32(self, v: i32) -> Result<()> {
-        self.output.write_i32::<BigEndian>(v).or_else(|x| Result::Err(Error::Io(x)))
+        self.output.write_i32::<BigEndian>(v).map_err(Error::Io)
     }
 
     // Not particularly efficient but this is example code anyway. A more
     // performant approach would be to use the `itoa` crate.
     fn serialize_i64(self, v: i64) -> Result<()> {
-        self.output.write_i64::<BigEndian>(v).or_else(|x| Result::Err(Error::Io(x)))
+        self.output.write_i64::<BigEndian>(v).map_err(Error::Io)
     }
 
     fn serialize_u8(self, v: u8) -> Result<()> {
-        self.output.write_u8(v).or_else(|x| Result::Err(Error::Io(x)))
+        self.output.write_u8(v).map_err(Error::Io)
     }
 
     fn serialize_u16(self, v: u16) -> Result<()> {
-        self.output.write_u16::<BigEndian>(v).or_else(|x| Result::Err(Error::Io(x)))
+        self.output.write_u16::<BigEndian>(v).map_err(Error::Io)
     }
 
     fn serialize_u32(self, v: u32) -> Result<()> {
-        self.output.write_u32::<BigEndian>(v).or_else(|x| Result::Err(Error::Io(x)))
+        self.output.write_u32::<BigEndian>(v).map_err(Error::Io)
     }
 
     fn serialize_u64(self, v: u64) -> Result<()> {
-        self.output.write_u64::<BigEndian>(v).or_else(|x| Result::Err(Error::Io(x)))
+        self.output.write_u64::<BigEndian>(v).map_err(Error::Io)
     }
 
     fn serialize_f32(self, v: f32) -> Result<()> {
-        self.output.write_f32::<BigEndian>(v).or_else(|x| Result::Err(Error::Io(x)))
+        self.output.write_f32::<BigEndian>(v).map_err(Error::Io)
     }
 
     fn serialize_f64(self, v: f64) -> Result<()> {
-        self.output.write_f64::<BigEndian>(v).or_else(|x| Result::Err(Error::Io(x)))
+        self.output.write_f64::<BigEndian>(v).map_err(Error::Io)
     }
 
     // Serialize a char as a single-character string. Other formats may

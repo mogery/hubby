@@ -1,4 +1,4 @@
-use std::fmt::{Display, self};
+
 
 use tokio::{net::TcpStream, io::AsyncReadExt};
 pub use mc_varint::*;
@@ -9,7 +9,7 @@ pub async fn read_varint_tcp(socket: &mut TcpStream) -> Result<i32, VarIntError>
     let mut current_byte: u8;
 
     loop {
-        current_byte = socket.read_u8().await.or_else(|e| Err(VarIntError::Io(e)))?;
+        current_byte = socket.read_u8().await.map_err(VarIntError::Io)?;
 
         value |= (current_byte as i32 & 0x7F) << pos;
 
