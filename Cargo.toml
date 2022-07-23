@@ -2,5 +2,5 @@
 members = [
     "hubby",
     "serde_mcje",
-    "serde_mcje_macro"
+    "mc_varint",
 ]

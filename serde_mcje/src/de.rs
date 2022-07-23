@@ -1,8 +1,9 @@
 use serde::Deserialize;
 use serde::de::{self, DeserializeSeed, Visitor, SeqAccess};
 use byteorder::{BigEndian, ReadBytesExt};
+use mc_varint::*;
 
-use crate::{error::{Error, Result}, varint::*};
+use crate::error::{Error, Result};
 
 
 pub struct Deserializer<'de> {
@@ -80,7 +81,15 @@ impl<'de> Deserializer<'de> {
     // Makes no attempt to handle escape sequences. What did you expect? This is
     // example code!
     fn parse_string(&mut self) -> Result<&'de str> {
-        let (len, len_len) = read_varint(&self.input)?;
+        let (len, len_len) = match read_varint(&self.input) {
+            Ok(x) => Ok(x),
+            Err(e) => {
+                Err(match e {
+                    VarIntError::Io(e) => Error::Io(e),
+                    VarIntError::Overflow => Error::VarIntOverflow
+                })
+            }
+        }?;
         self.toss_bytes(len_len);
 
         let s = match std::str::from_utf8(&self.input[..len as usize]) {

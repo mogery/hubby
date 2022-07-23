@@ -2,10 +2,9 @@ mod varint;
 
 use std::io::ErrorKind;
 
-use serde_mcje::varint::read_varint;
 use tokio::net::TcpListener;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
-use varint::read_varint_tcp;
+use varint::{read_varint, read_varint_tcp};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

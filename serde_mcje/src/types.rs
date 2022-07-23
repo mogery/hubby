@@ -1,7 +1,7 @@
 use std::fmt;
 
 use serde::{Serialize, Deserialize, de::{self, Visitor}, Deserializer};
-use crate::varint::*;
+use mc_varint::*;
 
 #[derive(PartialEq, Debug)]
 pub struct VarInt(pub i32);

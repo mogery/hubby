@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
 byteorder = "1"
+mc_varint = { path = "../mc_varint" }

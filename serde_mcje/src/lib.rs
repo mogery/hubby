@@ -1,7 +1,6 @@
 mod de;
 mod error;
 mod ser;
-pub mod varint;
 pub mod types;
 
 pub use de::{from_vec, Deserializer};

@@ -1,6 +1,8 @@
 use serde::{ser, Serialize};
 use byteorder::{BigEndian, WriteBytesExt};
-use crate::{error::{Error, Result}, varint::*};
+use mc_varint::*;
+
+use crate::error::{Error, Result};
 
 pub struct Serializer {
     // This string starts empty and JSON is appended as values are serialized.
