@@ -17,7 +17,7 @@ impl<'de> Deserializer<'de> {
     // That way basic use cases are satisfied by something like
     // `serde_json::from_str(...)` while advanced use cases that require a
     // deserializer can make one with `serde_json::Deserializer::from_str(...)`.
-    pub fn from_vec(input: &'de Vec<u8>) -> Self {
+    pub fn from_slice(input: &'de [u8]) -> Self {
         Deserializer { input }
     }
 }
@@ -27,11 +27,18 @@ impl<'de> Deserializer<'de> {
 // depending on what Rust types the deserializer is able to consume as input.
 //
 // This basic deserializer supports only `from_str`.
-pub fn from_vec<'a, T>(s: &'a Vec<u8>) -> Result<T>
+pub fn from_vec<'a, T>(s: &'a [u8]) -> Result<T>
 where
     T: Deserialize<'a>,
 {
-    let mut deserializer = Deserializer::from_vec(s);
+    from_slice(s)
+}
+
+pub fn from_slice<'a, T>(s: &'a [u8]) -> Result<T>
+where
+    T: Deserialize<'a>,
+{
+    let mut deserializer = Deserializer::from_slice(s);
     let t = T::deserialize(&mut deserializer)?;
     if deserializer.input.is_empty() {
         Ok(t)

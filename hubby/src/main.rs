@@ -1,10 +1,9 @@
 mod varint;
+mod connection;
+mod packets;
 
-use std::io::ErrorKind;
-
+use connection::Connection;
 use tokio::net::TcpListener;
-use tokio::io::{AsyncReadExt};
-use varint::{read_varint, read_varint_tcp};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -14,48 +13,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let (mut socket, _) = listener.accept().await?;
 
         tokio::spawn(async move {
-            loop {
-                let len = match read_varint_tcp(&mut socket).await {
-                    Ok(x) => x,
-                    Err(varint::VarIntError::Io(e)) => {
-                        if e.kind() == ErrorKind::UnexpectedEof {
-                            println!("Disconnected.");
-                        } else {
-                            eprintln!("failed to read packet length from socket; err = {:?}", e);
-                        }
-                        return;
-                    },
-                    Err(e) => {
-                        eprintln!("failed to read packet length from socket; err = {:?}", e);
-                        return;
-                    }
-                };
+            let conn = Connection {
+                socket: &mut socket,
+                state: connection::ConnectionState::Handshaking,
+            };
 
-                let mut vec = vec![0_u8; len as usize];
-                match socket.read_exact(&mut vec).await {
-                    Ok(_) => {},
-                    Err(e) => {
-                        eprintln!("failed to read packet; err = {:?}", e);
-                        return;
-                    }
-                };
-
-                let mut buf = &mut vec[..];
-
-                println!("Received with content {:?}", buf);
-
-                let (id, id_len) = match read_varint(buf) {
-                    Ok(x) => x,
-                    Err(e) => {
-                        eprintln!("failed to read packet ID from socket; err = {:?}", e);
-                        return;
-                    }
-                };
-
-                buf = &mut buf[id_len..];
-
-                println!("Packet ID {}", id);
-            }
+            conn.listen().await;
         });
     }
 }

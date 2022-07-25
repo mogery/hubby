@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "hubby",
+    "hubby_macros",
     "serde_mcje",
     "mc_varint",
 ]

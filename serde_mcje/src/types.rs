@@ -3,7 +3,7 @@ use std::fmt;
 use serde::{Serialize, Deserialize, de::{self, Visitor}, Deserializer};
 use mc_varint::*;
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Eq, Debug)]
 pub struct VarInt(pub i32);
 
 impl From<VarInt> for i32 {
@@ -23,6 +23,12 @@ impl Serialize for VarInt {
         where
             S: serde::Serializer {
         write_varint(self.0).serialize(serializer)
+    }
+}
+
+impl fmt::Display for VarInt {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.0)
     }
 }
 
@@ -78,7 +84,7 @@ impl<'de> Deserialize<'de> for VarInt {
     }
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Eq, Debug)]
 pub struct VarLong(pub i64);
 
 impl From<VarLong> for i64 {
@@ -98,6 +104,12 @@ impl Serialize for VarLong {
         where
             S: serde::Serializer {
         write_varlong(self.0).serialize(serializer)
+    }
+}
+
+impl fmt::Display for VarLong {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.0)
     }
 }
 

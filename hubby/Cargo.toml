@@ -10,3 +10,4 @@ tokio = { version = "1", features = ["full"] }
 serde = { version = "1", features = ["derive"] }
 serde_mcje = { path = "../serde_mcje" }
 mc_varint = { path = "../mc_varint" }
+hubby_macros = { path = "../hubby_macros" }

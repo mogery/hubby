@@ -3,7 +3,7 @@ mod error;
 mod ser;
 pub mod types;
 
-pub use de::{from_vec, Deserializer};
+pub use de::{from_vec, from_slice, Deserializer};
 pub use error::{Error, Result};
 pub use ser::{to_vec, Serializer};
 
