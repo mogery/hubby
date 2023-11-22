@@ -28,7 +28,6 @@ struct RegisterPacketArgs {
 
 impl Parse for RegisterPacketArgs {
     fn parse(input: ParseStream) -> syn::Result<Self> {
-        // parses a,b,c, or a,b,c where a,b and c are Indent
         let id = LitInt::parse(input)?;
         Ok(RegisterPacketArgs {
             id: id.base10_parse()?,
